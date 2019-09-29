@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 
 const firebaseConfig = {
   apiKey: "AIzaSyAwO1XnxTNmGljBboncz9RnhfH1Z2_Uj9k",
@@ -54,7 +54,7 @@ const Welcome = ({ user }) => (
   </Message>
 );
 
-const CourseList = ({ courses }) => {
+const CourseList = ({ courses, user }) => {
   const [term, setTerm] = useState('Fall');
   const [selected, toggle] = useSelection();
   const termCourses = courses.filter(course => term === getCourseTerm(course));
@@ -63,7 +63,9 @@ const CourseList = ({ courses }) => {
     <TermSelector state = { { term, setTerm } } />
     <Button.Group>
      { courses.map(course => <Course key={course.id} course={ course } 
-        state={{ selected, toggle}}/>)}
+        state={{ selected, toggle}}
+        user={ user }
+        />)}
     </Button.Group>
     </React.Fragment>
     );
@@ -135,12 +137,12 @@ const addScheduleTimes = schedule => ({
   courses: Object.values(schedule.courses).map(addCourseTimes)
 });
 
-const Course = ({ course, state }) => (
+const Course = ({ course, state, user }) => (
   <Button color={ buttonColor(state.selected.includes(course)) }
-    onClick={ () => state.toggle(course) } 
-    onDoubleClick={ () => moveCourse(course) }
+    onClick={ () => state.toggle(course) }
+    onDoubleClick={ user ? () => moveCourse(course) : null }
     disabled={ hasConflict(course, state.selected) }
-  >
+    >
     { getCourseTerm(course) } CS { getCourseNumber(course) }: { course.title }
   </Button>
 );
