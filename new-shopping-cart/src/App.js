@@ -6,6 +6,8 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,12 +38,27 @@ const App = () => {
 
     <React.Fragment>
       <CssBaseline />
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
           <div className={classes.root}>
             <Grid container spacing={3}>
               {products.map(product =>
-                <Grid item xs={6} sm={3} key={product.sku}>
-                  <Paper className={classes.paper} key={product.sku}>{product.title}</Paper>
+                <Grid item xs={12} sm={6} md={4} lg={4} key={product.sku}>
+                  <Paper className={classes.paper} key={product.sku}>
+                    {product.title}
+                    <br/>
+                    <img src={"data/products/" + product.sku + "_2.jpg"}/>
+                    <br/>
+                    {product.description + "\n"}
+                    <br/>
+                    {product.currencyFormat + product.price}
+                    <br/>
+                    <ButtonGroup variant="contained" size="small" aria-label="small contained button group">
+                      <Button>S</Button>
+                      <Button>M</Button>
+                      <Button>L</Button>
+                      <Button>XL</Button>
+                    </ButtonGroup>
+                  </Paper>
                 </Grid>
               )}
             </Grid>
