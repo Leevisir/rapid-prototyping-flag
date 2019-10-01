@@ -1,30 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import 'rbx/index.css';
-// import { Button, Container, Title, Tile, Box } from 'rbx';
 import ReactDOM from 'react-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-
-
-// const useStyles = makeStyles(theme => ({
-//   root: {
-//     display: 'flex',
-//     flexWrap: 'wrap',
-//     justifyContent: 'space-around',
-//     overflow: 'hidden',
-//     backgroundColor: theme.palette.background.paper,
-//   },
-//   gridList: {
-//     width: 500,
-//     height: 450,
-//   },
-// }));
 
 const useStyles = makeStyles(theme => ({
   root: {
