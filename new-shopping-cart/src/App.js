@@ -21,8 +21,13 @@ const useStyles = makeStyles(theme => ({
 const useSelection = () => {
   const [selected, setSelected] = useState([]);
   const [addedTimes, setAddedTimes] = useState(0);
-  const addToCart = (x) => {
-    setSelected([x].concat(selected));
+  const addToCart = (x, add = true) => {
+    if (add) {
+      setSelected([x].concat(selected));
+    } else {
+      selected.splice(selected.indexOf(x), 1);
+      setSelected(selected);
+    }
     // setSelected(selected.includes(x) ? selected : [x].concat(selected));
     // setAddedTimes(addedTimes+1);
   };
@@ -32,6 +37,7 @@ const useSelection = () => {
 const App = () => {
   const [data, setData] = useState({});
   const [selected, addToCart] = useSelection();
+  const [state, setState] = useState({right: false});
   const classes = useStyles();
   const products = Object.values(data);
 
@@ -52,12 +58,12 @@ const App = () => {
         <Container maxWidth="lg">
           <div className={classes.root}>
             <div className={classes.Child}>
-              <PrimarySearchAppBar products={products} stateOfSelection={{selected, addToCart}}/>
+              <PrimarySearchAppBar products={products} stateOfSelection={{selected, addToCart}} state={state} setState={setState}/>
             </div>
             <br/>
 
             <div className={classes.Child}>
-            <ItemList products={products} stateOfSelection={{selected, addToCart}}/>
+            <ItemList products={products} stateOfSelection={{selected, addToCart}} state={state} setState={setState}/>
             </div>
           </div>
         </Container>

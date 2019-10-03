@@ -63,15 +63,15 @@ const Product = ({ product, state, classes }) => (
       <Button
         variant="contained"
         color={ buttonColor(state.selected.includes(product)) }
-        onClick={ () => state.addToCart(product)
-      }>
+        onClick={ () => {state.addToCart(product); state.setState({ ...state.state, ['right']: true })}}
+        >
         { buttonText(state.selected.includes(product), product, state.selected) }
       </Button>
     </Paper>
   </Grid>
 );
 
-export default function ItemList({ products, stateOfSelection }) {
+export default function ItemList({ products, stateOfSelection, state, setState }) {
   const classes = useStyles();
   // const [listOfItemsInCart, setlistOfItemsInCart] = useState(null);
   // const inCartItems = items.filter(item => term === getCourseTerm(course));
@@ -82,7 +82,7 @@ export default function ItemList({ products, stateOfSelection }) {
           key={product.sku}
           product={product}
           classes={classes}
-          state={ { selected:stateOfSelection.selected, addToCart:stateOfSelection.addToCart } }
+          state={ { selected:stateOfSelection.selected, addToCart:stateOfSelection.addToCart, state:state, setState:setState } }
         />
       )}
     </Grid>

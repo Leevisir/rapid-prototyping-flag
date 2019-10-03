@@ -80,7 +80,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function PrimarySearchAppBar({products, stateOfSelection}) {
+export default function PrimarySearchAppBar({products, stateOfSelection,state,setState}) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -209,7 +209,7 @@ export default function PrimarySearchAppBar({products, stateOfSelection}) {
           </div>
           <div>
 
-            <ShoppingCart products={products} stateOfSelection={stateOfSelection}/>
+            <ShoppingCart products={products} stateOfSelection={stateOfSelection} state={state} setState={setState}/>
           </div>
         </Toolbar>
       </AppBar>
