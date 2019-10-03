@@ -1,30 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import 'rbx/index.css';
 import ReactDOM from 'react-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { fade, makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+
+
+import PrimarySearchAppBar from './components/PrimarySearchAppBar';
+import ItemList from './components/ItemList';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
   },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-}));
+}))
 
+const useSelection = () => {
+  const [selected, setSelected] = useState([]);
+  const [addedTimes, setAddedTimes] = useState(0);
+  const addToCart = (x) => {
+    setSelected([x].concat(selected));
+    // setSelected(selected.includes(x) ? selected : [x].concat(selected));
+    // setAddedTimes(addedTimes+1);
+  };
+  return [ selected, addToCart ];
+};
 
 const App = () => {
   const [data, setData] = useState({});
-  const products = Object.values(data);
+  const [selected, addToCart] = useSelection();
   const classes = useStyles();
+  const products = Object.values(data);
+
+
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await fetch('./data/products.json');
@@ -38,30 +49,16 @@ const App = () => {
 
     <React.Fragment>
       <CssBaseline />
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
           <div className={classes.root}>
-            <Grid container spacing={3}>
-              {products.map(product =>
-                <Grid item xs={12} sm={6} md={4} lg={4} key={product.sku}>
-                  <Paper className={classes.paper} key={product.sku}>
-                    {product.title}
-                    <br/>
-                    <img src={"data/products/" + product.sku + "_2.jpg"}/>
-                    <br/>
-                    {product.description + "\n"}
-                    <br/>
-                    {product.currencyFormat + product.price}
-                    <br/>
-                    <ButtonGroup variant="contained" size="small" aria-label="small contained button group">
-                      <Button>S</Button>
-                      <Button>M</Button>
-                      <Button>L</Button>
-                      <Button>XL</Button>
-                    </ButtonGroup>
-                  </Paper>
-                </Grid>
-              )}
-            </Grid>
+            <div className={classes.Child}>
+              <PrimarySearchAppBar products={products} stateOfSelection={{selected, addToCart}}/>
+            </div>
+            <br/>
+
+            <div className={classes.Child}>
+            <ItemList products={products} stateOfSelection={{selected, addToCart}}/>
+            </div>
           </div>
         </Container>
     </React.Fragment>
