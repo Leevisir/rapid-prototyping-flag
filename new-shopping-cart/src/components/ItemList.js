@@ -42,7 +42,7 @@ const buttonText = (selected, product, selectedList) => (
   selected ? 'Added'+' '+selectedList.reduce((acc, val) => acc.set(val, 1 + (acc.get(val) || 0)), new Map()).get(product) : 'Add to Cart'
 );
 
-const Product = ({ product, state, classes }) => (
+const Product = ({ product, state, classes, inventoryOne }) => (
   <Grid item xs={12} sm={6} md={4} lg={4} key={product.sku}>
     <Paper className={classes.paper} key={product.sku}>
       <img src={"data/products/" + product.sku + "_1.jpg"}/>
@@ -54,10 +54,10 @@ const Product = ({ product, state, classes }) => (
       {product.currencyFormat + product.price}
       <br/>
       <ButtonGroup variant="contained" size="small" aria-label="small contained button group">
-        <Button>S</Button>
-        <Button>M</Button>
-        <Button>L</Button>
-        <Button>XL</Button>
+        <Button disabled={inventoryOne.S <= 0}>S</Button>
+        <Button disabled={inventoryOne.M <= 0}>M</Button>
+        <Button disabled={inventoryOne.L <= 0}>L</Button>
+        <Button disabled={inventoryOne.XL <= 0}>XL</Button>
       </ButtonGroup>
       <br/>
       <Button
@@ -71,8 +71,9 @@ const Product = ({ product, state, classes }) => (
   </Grid>
 );
 
-export default function ItemList({ products, stateOfSelection, state, setState }) {
+export default function ItemList({ products, stateOfSelection, state, setState, inventory }) {
   const classes = useStyles();
+  console.log(Object.keys(inventory))
   // const [listOfItemsInCart, setlistOfItemsInCart] = useState(null);
   // const inCartItems = items.filter(item => term === getCourseTerm(course));
   return (
@@ -83,6 +84,7 @@ export default function ItemList({ products, stateOfSelection, state, setState }
           product={product}
           classes={classes}
           state={ { selected:stateOfSelection.selected, addToCart:stateOfSelection.addToCart, state:state, setState:setState } }
+          inventoryOne={inventory[product.sku]}
         />
       )}
     </Grid>

@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "new-shopping-cart-8613a"
+    "default": "new-shopping-cart-8613a",
+    "leevi-shopping-cart": "leevi-shopping-cart-34e65"
   }
 }
