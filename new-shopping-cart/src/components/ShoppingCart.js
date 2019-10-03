@@ -13,6 +13,8 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { bottom } from '@material-ui/system';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -37,9 +39,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function ShoppingCart({products, stateOfSelection}) {
+export default function ShoppingCart({products, stateOfSelection, state, setState}) {
   const classes = useStyles();
-  const [state, setState] = useState({right: false});
+
 
   const toggleDrawer = (side, open) => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -85,9 +87,10 @@ export default function ShoppingCart({products, stateOfSelection}) {
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <Typography variant="body2" style={{ cursor: 'pointer' }}>
-                    Remove
-                  </Typography>
+                  <IconButton className={classes.button} aria-label="delete" onClick={ () => stateOfSelection.addToCart(product, false)}>
+                    <DeleteIcon />
+                  </IconButton>
+
                 </Grid>
               </Grid>
               <Grid item>
@@ -179,3 +182,7 @@ export { Drawer };
 // }
 // </List>
 // </div>
+
+// <Typography variant="body2" style={{ cursor: 'pointer' }} onClick={ () => {stateOfSelection.addToCart(product, false)} } >
+//   Remove
+// </Typography>
