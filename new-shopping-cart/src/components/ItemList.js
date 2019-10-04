@@ -38,11 +38,20 @@ const ColorButton = withStyles(theme => ({
 const buttonColor = selected => (
   selected ? 'secondary' : 'primary'
 );
-const buttonText = (selected, product, selectedList) => (
-  selected ? 'Added'+' '+selectedList.reduce((acc, val) => acc.set(val, 1 + (acc.get(val) || 0)), new Map()).get(product) : 'Add to Cart'
-);
+const buttonText = (selected, product, selectedList) => {
+  if (product.S < 1 && product.M <1 && product.L < 1 && product.XL < 1) {
+    return 'Out of stock'
+  }
+  return selected ? 'Added'+' '+selectedList.reduce((acc, val) => acc.set(val, 1 + (acc.get(val) || 0)), new Map()).get(product) : 'Add to Cart'
+};
+const sizeButtonColor = (selectedSize, product, size) => {
+  if(Object.keys(selectedSize).includes(String(product.sku)) && selectedSize[product.sku]===String(size)) 
+    return 'primary';
+  else 
+    return 'default';
+}
 
-const Product = ({ product, state, classes }) => (
+const Product = ({ product, state, classes, inventoryOne, selectedSize, setSelectedSize }) => (
   <Grid item xs={12} sm={6} md={4} lg={4} key={product.sku}>
     <Paper className={classes.paper} key={product.sku}>
       <img src={"data/products/" + product.sku + "_1.jpg"}/>
@@ -54,16 +63,44 @@ const Product = ({ product, state, classes }) => (
       {product.currencyFormat + product.price}
       <br/>
       <ButtonGroup variant="contained" size="small" aria-label="small contained button group">
-        <Button>S</Button>
-        <Button>M</Button>
-        <Button>L</Button>
-        <Button>XL</Button>
+        <Button 
+          disabled={product.S <= 0} 
+          onClick={() => { setSelectedSize({[product.sku]:'S'})}} 
+          color={ sizeButtonColor(selectedSize, product, 'S') } 
+        >S</Button>
+        <Button 
+          disabled={product.M <= 0} 
+          onClick={() => { setSelectedSize({[product.sku]:'M'})}}
+          color={ sizeButtonColor(selectedSize, product, 'M') }
+        >M</Button>
+        <Button 
+          disabled={product.L <= 0} 
+          onClick={() => { setSelectedSize({[product.sku]:'L'})}}
+          color={ sizeButtonColor(selectedSize, product, 'L') }
+        >L</Button>
+        <Button 
+          disabled={product.XL <= 0} 
+          onClick={() => { setSelectedSize({[product.sku]:'XL'})}}
+          color={ sizeButtonColor(selectedSize, product, 'XL') }
+        >XL</Button>
       </ButtonGroup>
       <br/>
       <Button
+        style={{width: "100%"}}
         variant="contained"
         color={ buttonColor(state.selected.includes(product)) }
-        onClick={ () => {state.addToCart(product); state.setState({ ...state.state, ['right']: true })}}
+        disabled={!Object.keys(selectedSize).includes(String(product.sku)) || (product.S < 1 && product.M <1 && product.L < 1 && product.XL < 1)}
+        onClick={ () => { 
+          if (!Object.keys(product).includes('addedSize')) Object.assign(product, {'addedSize': []})
+          if (!Object.keys(selectedSize).includes(String(product.sku))) 
+            { alert("Please select a size :)"); setSelectedSize({}); }
+          else
+            product['addedSize'].push(selectedSize[product.sku]); 
+          state.addToCart(product);
+          setSelectedSize({});
+          product[selectedSize[product.sku]] = product[selectedSize[product.sku]] - 1;
+          console.log(product);
+          state.setState({ ...state.state, ['right']: true })}}
         >
         { buttonText(state.selected.includes(product), product, state.selected) }
       </Button>
@@ -71,7 +108,8 @@ const Product = ({ product, state, classes }) => (
   </Grid>
 );
 
-export default function ItemList({ products, stateOfSelection, state, setState }) {
+export default function ItemList({ products, stateOfSelection, state, setState, inventory }) {
+  const [selectedSize, setSelectedSize] = useState({});
   const classes = useStyles();
   // const [listOfItemsInCart, setlistOfItemsInCart] = useState(null);
   // const inCartItems = items.filter(item => term === getCourseTerm(course));
@@ -83,6 +121,9 @@ export default function ItemList({ products, stateOfSelection, state, setState }
           product={product}
           classes={classes}
           state={ { selected:stateOfSelection.selected, addToCart:stateOfSelection.addToCart, state:state, setState:setState } }
+          inventoryOne={inventory[product.sku]}
+          selectedSize={selectedSize}
+          setSelectedSize={setSelectedSize}
         />
       )}
     </Grid>

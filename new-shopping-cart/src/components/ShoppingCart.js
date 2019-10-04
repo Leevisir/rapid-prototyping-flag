@@ -87,7 +87,14 @@ export default function ShoppingCart({products, stateOfSelection, state, setStat
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <IconButton className={classes.button} aria-label="delete" onClick={ () => stateOfSelection.addToCart(product, false)}>
+                  <IconButton 
+                    className={classes.button} 
+                    aria-label="delete" 
+                    onClick={ () => {
+                      stateOfSelection.addToCart(product, false);
+                      var removeSize = product['addedSize'].pop();
+                      product[removeSize] = product[removeSize] + 1;
+                      }}>
                     <DeleteIcon />
                   </IconButton>
 
