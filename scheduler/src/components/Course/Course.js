@@ -1,12 +1,12 @@
 import 'rbx/index.css';
 import { Button } from 'rbx';
 import { getCourseTerm, hasConflict } from './times';
-import db from '../Database/Database';
-import React, { useState, useEffect } from 'react';
+import {db} from '../../App'
+import React from 'react';
 
 const buttonColor = selected => (
     selected ? 'success' : null
-);
+)
 
 const moveCourse = course => {
     const meets = prompt('Enter new meeting data, in this format:', course.meets);
@@ -53,4 +53,3 @@ const Course = ({ course, state, user }) => (
     );
 
 export default Course;
-export { buttonColor };

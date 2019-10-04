@@ -27,4 +27,4 @@ const hasConflict = (course, selected) => (
     selected.some(selection => courseConflict(course, selection))
 );
 
-export { timeConflict, courseConflict, hasConflict,  getCourseTerm, terms }
+export { hasConflict,  getCourseTerm }

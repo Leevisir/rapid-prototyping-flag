@@ -1,18 +1,17 @@
 import 'rbx/index.css';
 import { Button } from 'rbx';
 import React, { useState } from 'react';
-import db from '../App';
-import Course from './Course';
-import { terms, buttonColor, getCourseTerm } from './Course';
+import Course from './Course/Course';
 
 
-const useSelection = () => {
-    const [selected, setSelected] = useState([]);
-    const toggle = (x) => {
-      setSelected(selected.includes(x) ? selected.filter(y => y !== x) : [x].concat(selected))
-    };
-    return [ selected, toggle ];
-  };
+const getCourseTerm = course => (
+  terms[course.id.charAt(0)]
+);
+const terms = { F: 'Fall', W: 'Winter', S: 'Spring'};
+
+const buttonColor = selected => (
+  selected ? 'success' : null
+);
 
 const TermSelector = ({ state }) => (
     <Button.Group hasAddons>
@@ -29,15 +28,23 @@ const TermSelector = ({ state }) => (
     </Button.Group>
 );
 
-const CourseList = ({ courses, user }) => {
-    const [term, setTerm] = useState('Fall');
+const useSelection = () => {
+  const [selected, setSelected] = useState([]);
+  const toggle = (x) => {
+    setSelected(selected.includes(x) ? selected.filter(y => y !== x) : [x].concat(selected))
+  };
+  return [ selected, toggle ];
+};
+
+export default function CourseList ({ courses, user }) {
     const [selected, toggle] = useSelection();
+    const [term, setTerm] = useState('Fall');
     const termCourses = courses.filter(course => term === getCourseTerm(course));
     return (
       <React.Fragment>
       <TermSelector state = { { term, setTerm } } />
       <Button.Group>
-       { courses.map(course => <Course key={course.id} course={ course }
+       { termCourses.map(course => <Course key={course.id} course={ course }
           state={{ selected, toggle}}
           user={ user }
           />)}
@@ -46,4 +53,4 @@ const CourseList = ({ courses, user }) => {
       );
   };
 
-export default CourseList;
+// export default CourseList;
