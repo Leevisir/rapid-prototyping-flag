@@ -108,18 +108,6 @@ const App = () => {
       fetchProducts();
     }, []);
 
-
-  console.log(products);
-
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     const response = await fetch('./data/products.json');
-  //     const json = await response.json();
-  //     setData(json);
-  //   };
-  //   fetchProducts();
-  // }, []);
-
 // load from local
   // useEffect(() => {
   //   const fetchInventory = async () => {
