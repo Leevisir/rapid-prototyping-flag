@@ -12,6 +12,7 @@ import 'firebase/database';
 
 import PrimarySearchAppBar from './components/PrimarySearchAppBar';
 import ItemList from './components/ItemList';
+import { objectTypeSpreadProperty } from '@babel/types';
 
 // const firebaseConfig = {
 //   apiKey: "AIzaSyAKxnND_AxNtwzHAHcl0xbY87gepgRxDIE",
@@ -71,21 +72,43 @@ const App = () => {
 
 
 // loal from database
-  useEffect(() => {
-    const handleData = snap => {
-      if (snap.val()) setInventoryData(snap.val());
-      console.log(snap.val());
-    }
-    const fetchProducts = async () => {
-      const response = await fetch('./data/products.json');
-      const json = await response.json();
-      setData(json);
-    };
-    db.on('value', handleData, error => {console.log(error)});
-    fetchProducts();
-    return () => { db.off('value', handleData); };
-  }, []);
-  console.log(inventory);
+  // useEffect(() => {
+  //   const handleData = snap => {
+  //     if (snap.val()) setInventoryData(snap.val());
+  //     console.log(snap.val());
+  //   }
+  //   const fetchProducts = async () => {
+  //     const response = await fetch('./data/products.json');
+  //     const json = await response.json();
+  //     setData(json);
+  //   };
+  //   db.on('value', handleData, error => {console.log(error)});
+  //   fetchProducts();
+  //   return () => { db.off('value', handleData); };
+  // }, []);
+  // console.log(inventory);
+  // console.log(products);
+
+
+    useEffect(() => {
+      const fetchProducts = async () => {
+        const response = await fetch('./data/products.json');
+        const json = await response.json();
+        const handleData = snap => {
+          if(snap.val()) {
+            Object.keys(json).forEach(element => {
+              Object.assign(json[element], snap.val()[element]);
+            });
+            setData(json);
+          }
+        };
+        db.on('value', handleData, error => alert(error));
+        return () => { db.off('value', handleData)}; 
+      };
+      fetchProducts();
+    }, []);
+
+
   console.log(products);
 
   // useEffect(() => {

@@ -38,9 +38,12 @@ const ColorButton = withStyles(theme => ({
 const buttonColor = selected => (
   selected ? 'secondary' : 'primary'
 );
-const buttonText = (selected, product, selectedList) => (
-  selected ? 'Added'+' '+selectedList.reduce((acc, val) => acc.set(val, 1 + (acc.get(val) || 0)), new Map()).get(product) : 'Add to Cart'
-);
+const buttonText = (selected, product, selectedList) => {
+  if (product.S < 1 && product.M <1 && product.L < 1 && product.XL < 1) {
+    return 'Out of stock'
+  }
+  return selected ? 'Added'+' '+selectedList.reduce((acc, val) => acc.set(val, 1 + (acc.get(val) || 0)), new Map()).get(product) : 'Add to Cart'
+};
 
 const Product = ({ product, state, classes, inventoryOne }) => (
   <Grid item xs={12} sm={6} md={4} lg={4} key={product.sku}>
@@ -54,16 +57,17 @@ const Product = ({ product, state, classes, inventoryOne }) => (
       {product.currencyFormat + product.price}
       <br/>
       <ButtonGroup variant="contained" size="small" aria-label="small contained button group">
-        <Button disabled={inventoryOne.S <= 0}>S</Button>
-        <Button disabled={inventoryOne.M <= 0}>M</Button>
-        <Button disabled={inventoryOne.L <= 0}>L</Button>
-        <Button disabled={inventoryOne.XL <= 0}>XL</Button>
+        <Button disabled={product.S <= 0}>S</Button>
+        <Button disabled={product.M <= 0}>M</Button>
+        <Button disabled={product.L <= 0}>L</Button>
+        <Button disabled={product.XL <= 0}>XL</Button>
       </ButtonGroup>
       <br/>
       <Button
         variant="contained"
         color={ buttonColor(state.selected.includes(product)) }
         onClick={ () => {state.addToCart(product); state.setState({ ...state.state, ['right']: true })}}
+        disabled={product.S < 1 && product.M <1 && product.L < 1 && product.XL}
         >
         { buttonText(state.selected.includes(product), product, state.selected) }
       </Button>
