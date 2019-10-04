@@ -14,9 +14,14 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import 'firebase/auth';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import Button from '@material-ui/core/Button';
+import firebase from 'firebase/app';
 
 import ShoppingCart from './ShoppingCart';
-import { toggleDrawer, Drawer } from './ShoppingCart';
+
+
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -80,13 +85,45 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const Welcome = ({ user }) => (
+  <div color="info">
+      Welcome, {user.displayName}
+      <Button onClick={() => firebase.auth().signOut()}>
+        Log out
+      </Button>
+  </div>
+);
+
+const SignIn = () => (
+  <StyledFirebaseAuth
+    uiConfig={uiConfig}
+    firebaseAuth={firebase.auth()}
+  />
+);
+
+const uiConfig = {
+  signInFlow: 'popup',
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID
+  ],
+  callbacks: {
+    signInSuccessWithAuthResult: () => false
+  }
+};
+
+
 export default function PrimarySearchAppBar({products, stateOfSelection,state,setState, inventory}) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [user, setUser] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(setUser);
+  }, []);
 
   const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget);
@@ -185,7 +222,8 @@ export default function PrimarySearchAppBar({products, stateOfSelection,state,se
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton
+            {!user ? <SignIn /> : <Welcome user={user}/>}
+            {/* <IconButton
               edge="end"
               aria-label="account of current user"
               aria-controls={menuId}
@@ -194,10 +232,11 @@ export default function PrimarySearchAppBar({products, stateOfSelection,state,se
               color="inherit"
             >
               <AccountCircle />
-            </IconButton>
+            </IconButton> */}
           </div>
           <div className={classes.sectionMobile}>
-            <IconButton
+            {!user ? <SignIn /> : <Welcome user={user}/>}
+            {/* <IconButton
               aria-label="show more"
               aria-controls={mobileMenuId}
               aria-haspopup="true"
@@ -205,10 +244,10 @@ export default function PrimarySearchAppBar({products, stateOfSelection,state,se
               color="inherit"
             >
               <MoreIcon />
-            </IconButton>
+            </IconButton> */}
           </div>
           <div>
-
+            
             <ShoppingCart products={products} stateOfSelection={stateOfSelection} state={state} setState={setState}/>
           </div>
         </Toolbar>
